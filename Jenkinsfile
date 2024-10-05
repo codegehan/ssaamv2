@@ -28,7 +28,7 @@ pipeline {
                     dir(targetDir) {
                         sh '''
                         git init || true
-                        git remote add origin https://github.com/codegehan/dts.git || true
+                        git remote add origin https://github.com/codegehan/ssaamv2.git || true
                         git fetch origin main
                         git reset --hard origin/main
                         '''
