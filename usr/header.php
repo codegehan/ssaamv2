@@ -36,7 +36,7 @@ if(!JwtHandler::gatewayInit($_SESSION["token"])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.1.4/js/dataTables.js"></script>
-    <link rel="icon" type="image/png" href="../img/ccs.png">
+    <link rel="icon" type="image/png" href="../img/ssaam-new.png">
     <title>SSAAM</title>
 </head>
 <style>

@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="icon" type="image/png" href="img/ssaam-new.png">
     <title>SSAAM</title>
 </head>
 <body>
@@ -20,12 +21,12 @@
         </div>
         <div class="container h-auto my-3" style="max-width:350px;">
             <div class="bg-light pt-3 text-center shadow border rounded">
-                <img src="img/ssaam.png" alt="SSAAM Logo" class="img-fluid" style="width:180px;height:80px;">
+                <img src="img/ssaam.png" alt="SSAAM Logo" class="img-fluid my-3" style="width:60%;">
                 <form action="login.php" method="post">
                     <div class="p-3">
                         <select class="form-control mb-2" name="logintype">
                             <option value="non-officer">Student</option>
-                            <option value="officer">Admin</option>
+                            <option value="officer" selected>Admin</option>
                         </select>
                         <input type="text" name="studentid" class="form-control mb-2" maxlength="15" placeholder="Student Id" required>
                         <input type="password" name="password" class="form-control" maxlength="15" placeholder="Password" required>
