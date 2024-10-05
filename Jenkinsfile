@@ -3,22 +3,7 @@ pipeline {
     environment {
         MY_ROOT_CREDENTIALS = credentials('myrootcredentials')  // ID of your credentials
     }
-    stages {
-        // stage('Prepare Directory') {
-        //     steps {
-        //         script {
-        //             // Define the directory and backup path
-        //             def targetDir = '/usr/share/nginx/html/dts'
-        //             def backupDir = '/usr/share/nginx/html/dts_backup'
-                    
-        //             // Create a backup of the existing content
-        //             sh """
-        //             sudo mkdir -p ${backupDir}
-        //             sudo cp -r ${targetDir}/* ${backupDir}/
-        //             """
-        //         }
-        //     }
-        // }      
+    stages {  
         stage('Get Source Code') {
             steps {
                 script {
