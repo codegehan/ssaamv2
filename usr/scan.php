@@ -56,8 +56,10 @@
                         </div>
                     </div>
                 </form>
-                <button type="button" id="startScan" onclick="startScanning()" class="btn btn-sm btn-primary bg-gradient">Start Scanning</button>
-	            <button type="button" id="stopScan" hidden onclick="stopScanning()" class="btn btn-sm btn-danger bg-gradient">Stop Scanning</button>
+                <div class="text-center">
+                    <button type="button" id="startScan" onclick="startScanning()" class="btn btn-sm btn-primary bg-gradient">Start Scanning</button>
+                    <button type="button" id="stopScan" hidden onclick="stopScanning()" class="btn btn-sm btn-danger bg-gradient">Stop Scanning</button>
+                </div>
             </div>
         </div>
     </div>
@@ -168,60 +170,6 @@
             document.getElementById('reader').innerHTML = '';
         }
     }
-
-
-    // let isProcessing = false;
-
-    // function onScanSuccess(qrCode) {
-    //     if (isProcessing) return;
-
-    //     isProcessing = true;
-
-    //     try {
-    //         $.post('../lib/security.php', { data: qrCode, type: "decrypt" }, function(ress) {
-    //             Tools.ExecuteSql('checkstudent', JSON.stringify({"studentid": ress.decrypted})).then(function(response) {
-    //                 if (response.code === 1) {
-    //                     if (confirm("Are you " + response.data.fname.toUpperCase() + " " + response.data.mname.toUpperCase() + " " + response.data.lname.toUpperCase() + "?")) {
-    //                         // The user clicked "OK" (interpreted as "Yes")
-    //                         var attendanceType = document.getElementById('attendanceType').value;
-    //                         var activityName = document.getElementById('activityName').value;
-
-    //                         const jsonStringData = JSON.stringify({
-    //                             "studentid": response.data.student_id,
-    //                             "atttype": attendanceType,
-    //                             "activity": activityName
-    //                         });
-    //                         Tools.ExecuteSql('recordattendance', jsonStringData).then(function(attResponse) {
-    //                             alert(attResponse.code === 1 ? "Success: " + attResponse.data : "Error: " + attResponse.data);
-    //                             isProcessing = false;
-    //                         }).catch(function(attError) {
-    //                             console.error('Error:', attError);
-    //                             isProcessing = false;
-    //                         });
-    //                     } else {
-    //                         console.log("User chose No");
-    //                         isProcessing = false;
-    //                     }
-    //                 } else {
-    //                     alert(response.data);
-    //                     console.log("Error =", response.data);
-    //                     isProcessing = false;
-    //                 }
-    //             }).catch(function(error) {
-    //                 console.error('Error:', error);
-    //                 isProcessing = false;
-    //             });
-    //         });
-    //     } catch (err) {
-    //         console.log(err);
-    //         isProcessing = false;
-    //     }
-    // }
-
-    // function onScanError(errorMessage) { }
-
-    // var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 150 });
-    // html5QrcodeScanner.render(onScanSuccess, onScanError);
 </script>
 
 

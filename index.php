@@ -37,7 +37,7 @@ $dotenv->load();
                         <input type="text" name="studentid" class="form-control mb-2" maxlength="15" placeholder="Student Id" required>
                         <input type="password" name="password" class="form-control" maxlength="15" placeholder="Password" required>
                         <div class="mt-3">
-                            <button type="submit" class="btn btn-primary bg-gradient w-100">Login</button>
+                            <button type="submit" id="btnLogin" class="btn btn-primary bg-gradient w-100">Login</button>
                             <p class="pt-3 pb-0">No account yet? <a href="student/information.php">Register</a></p>
                         </div>
                         <p class="text-danger"><?php if(isset($_GET["message"])){echo $_GET["message"];}?></p>
@@ -61,32 +61,71 @@ body{ opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in; }
 document.addEventListener('DOMContentLoaded', function() {
 document.querySelector('body').classList.add('fade-in');
 });
+let btnLogin = document.getElementById('btnLogin');
+let dotCount = 0;
 $(document).ready(function () {
     $('form').on('submit', function (event) {
         event.preventDefault(); // Prevent the default form submission
-        // Capture form data
-        var formData = $(this).serialize();
-        // Send the form data using AJAX
-        $.ajax({
-            url: 'login.php',
-            type: 'POST',
-            data: formData,
-            success: function (response) {
-                var jsonResult = JSON.parse(response);
-                var code = jsonResult['code'];
-                if (code === 0) {
-                    $('.text-danger').text(jsonResult['message']);
-                } else if (code === 1) {
-                    document.querySelector('body').classList.add('fade-out');
-                    var loginType = jsonResult['loginType'];
-                    if (loginType.toUpperCase() === "OFFICER") { window.location.href = "usr/dashboard.php?sid=" + jsonResult['id']; } 
-                    else if (loginType.toUpperCase() === "NON-OFFICER") { window.location.href = "student/dashboard.php?sid=" + jsonResult['id']; }
+        try {
+            const btnLogin = document.getElementById('btnLogin');
+            let dotCount = 0;
+
+            btnLogin.innerText = 'Logging in';
+            btnLogin.disabled = true;
+
+            // Animate the dots
+            const interval = setInterval(() => {
+                dotCount = (dotCount + 1) % 4;
+                btnLogin.innerText = 'Logging in' + '.'.repeat(dotCount); 
+            }, 500);
+
+            // Capture form data
+            var formData = $(this).serialize();
+
+            // Send the form data using AJAX
+            $.ajax({
+                url: 'login.php',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    clearInterval(interval); // Stop the dot animation
+
+                    var jsonResult = JSON.parse(response);
+                    var code = jsonResult['code'];
+
+                    // Check the response code
+                    if (code === 0) {
+                        // Login failed, show the error message
+                        $('.text-danger').text(jsonResult['message']);
+                        btnLogin.innerText = 'Login'; // Reset button text
+                        btnLogin.disabled = false; // Re-enable the button
+                    } else if (code === 1) {
+                        // Login successful
+                        document.querySelector('body').classList.add('fade-out');
+                        var loginType = jsonResult['loginType'];
+                        if (loginType.toUpperCase() === "OFFICER") { 
+                            window.location.href = "usr/dashboard.php?sid=" + jsonResult['id']; 
+                        } else if (loginType.toUpperCase() === "NON-OFFICER") { 
+                            window.location.href = "student/dashboard.php?sid=" + jsonResult['id']; 
+                        }
+                    }
+                },
+                error: function () {
+                    clearInterval(interval); // Stop the dot animation
+                    // On AJAX error, show the error message and reset the button
+                    $('.text-danger').text("An error occurred while logging in.");
+                    btnLogin.innerText = 'Login'; // Reset button text
+                    btnLogin.disabled = false; // Re-enable the button
                 }
-            },
-            error: function () {
-                $('.text-danger').text(response);
-            }
-        });
+            });
+        } catch (e) {
+            clearInterval(interval); // Stop the dot animation in case of an exception
+            // On any exception, show the error message and reset the button
+            $('.text-danger').text("Something went wrong.");
+            btnLogin.innerText = 'Login'; // Reset button text
+            btnLogin.disabled = false; // Re-enable the button
+            console.log(e); // Log the error for debugging purposes
+        }
     });
 });
 </script>
