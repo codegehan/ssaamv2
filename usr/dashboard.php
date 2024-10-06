@@ -175,4 +175,5 @@ th, .span-bold      {font-weight: bold;}
         getTotal();
     }, 30000);
 </script>
+
 <?php include 'footer.php'; ?>

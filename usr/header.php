@@ -12,7 +12,6 @@ if(!isset($_GET["sid"]) || !isset($_SESSION["student_information"]) || !isset($_
     exit();
 } 
 else { $decryptedId = Crypto::Decrypt($_GET["sid"]); }
-
 if(!JwtHandler::gatewayInit($_SESSION["token"])) {
     session_unset();
     session_destroy();

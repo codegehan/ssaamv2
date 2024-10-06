@@ -1,3 +1,9 @@
+<?php 
+require 'vendor/autoload.php';
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__ . '/lib');
+$dotenv->load();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,12 +46,49 @@
             </div>
         </div>
     </div>
-<script>
 
-</script>
 <footer class="fixed-bottom bg-light text-center py-2">
-    <p class="mb-0">Powered by: Creatives Committee ~ v2.1</p>
+    <p class="mb-0">Powered by: Creatives Committee ~ v<?=$_ENV['VERSION']?></p>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<!-- <script src="lib/transition.js"></script> -->
+<style>
+body{ opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in; }
+.fade-in{ opacity: 1; visibility: visible; }
+.fade-out{ opacity: 0; }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+document.querySelector('body').classList.add('fade-in');
+});
+$(document).ready(function () {
+    $('form').on('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+        // Capture form data
+        var formData = $(this).serialize();
+        // Send the form data using AJAX
+        $.ajax({
+            url: 'login.php',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                var jsonResult = JSON.parse(response);
+                var code = jsonResult['code'];
+                if (code === 0) {
+                    $('.text-danger').text(jsonResult['message']);
+                } else if (code === 1) {
+                    document.querySelector('body').classList.add('fade-out');
+                    var loginType = jsonResult['loginType'];
+                    if (loginType.toUpperCase() === "OFFICER") { window.location.href = "usr/dashboard.php?sid=" + jsonResult['id']; } 
+                    else if (loginType.toUpperCase() === "NON-OFFICER") { window.location.href = "student/dashboard.php?sid=" + jsonResult['id']; }
+                }
+            },
+            error: function () {
+                $('.text-danger').text(response);
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

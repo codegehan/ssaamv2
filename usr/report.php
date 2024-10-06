@@ -1,10 +1,10 @@
 <?php include 'header.php'; ?>
 <style>.fullname{min-width:250px;word-wrap:break-word;}.customFont{font-size:0.8rem;}</style>
-<style> #generateReportIndicator {position: fixed;left: 0;top: 0;width: 100%;height: 100%;z-index: -999999;background: rgba(255, 255, 255, 0.8);display: flex;justify-content: center;align-items: center;flex-direction:column;} #loader img {width: 100px;height: auto;margin-bottom:10px;} #loading-message span {font-size:14px;color:#000;}</style>
+<style> #generateReportIndicator {position: fixed;left: 0;top: 0;width: 100%;height: 100%;z-index: 1000;background: rgba(255, 255, 255, 0.8);display: flex;justify-content: center;align-items: center;flex-direction:column;} #loader img {width: 100px;height: auto;margin-bottom:10px;} #loading-message span {font-size:14px;color:#000;}</style>
 <div id="generateReportIndicator" hidden><img src="../img/ccs.gif" alt="Loading..."><div id="loading-message"><span>Generating report. Please wait...</span></div></div>
 <div class="controller-container">
-    <button class="btn btn-lg btn-success" data-toggle="modal" data-target="#reportModal">Export to Excel <i style="font-style:italic;">(Officer)</i></button>
-    <button class="btn btn-lg btn-secondary ms-2" data-toggle="modal" data-target="#reportModalStudent">Export to Excel <i style="font-style:italic;">(Student)</i></button>
+    <button class="btn btn-lg btn-success w-100 mb-3 py-3" data-toggle="modal" data-target="#reportModal">Export to Excel <i style="font-style:italic;">(Officer)</i></button>
+    <button class="btn btn-lg btn-secondary w-100 py-3" data-toggle="modal" data-target="#reportModalStudent">Export to Excel <i style="font-style:italic;">(Student)</i></button>
 </div>
 </div>
 <!-- OFficer Modal -->
@@ -18,7 +18,7 @@
             <form id="generateOfficerReportForm">
                 <div class="row">
 
-                    <?php if(strtoupper($d["position"]) == "ADMINISTRATOR" || strtoupper($d["position"]) == "PRESIDENT" || strtoupper($d["position"]) == "VICE PRESIDENT") { ?>
+                    <?php if(strtoupper($d["level"]) == "ADMINISTRATOR" || strtoupper($d["level"]) == "PRESIDENT" || strtoupper($d["level"]) == "VICE PRESIDENT") { ?>
                     <div class="col">
                         <label for="formGroupExampleInput">Activity</label>
                         <select name="activity" id="activityName" class="form-control customFont">
@@ -28,7 +28,7 @@
                     </div>
                     <div class="col">
                         <label for="">Course</label>
-                        <select name="course"  class="form-control customFont">
+                        <select name="course" id="ownerAbbrv"  class="form-control customFont">
                             <option value=""></option>
                             <?php OptionMaker::DefaultPopulate("selectprogramenroll", 1, "value", "description");?>
                         </select>
@@ -71,7 +71,7 @@
         <div class="modal-body customFont">
             <form id="generateStudentReportForm">
                 <div class="row">
-                    <?php if(strtoupper($d["position"]) == "ADMINISTRATOR" || strtoupper($d["position"]) == "PRESIDENT" || strtoupper($d["position"]) == "VICE PRESIDENT") { ?>
+                    <?php if(strtoupper($d["level"]) == "ADMINISTRATOR" || strtoupper($d["level"]) == "PRESIDENT" || strtoupper($d["level"]) == "VICE PRESIDENT") { ?>
                     <div class="col">
                         <label for="formGroupExampleInput">Activity</label>
                         <select name="activity" id="activityNameStudent" class="form-control customFont">
@@ -149,54 +149,60 @@
     </div>
     </div>
 <script>
-var fullDataSet = [];
+
+let fullDataSet = [];
 // Officer Functions
 $('#generateBtn').click(function(){
     document.getElementById('generateReportIndicator').hidden = false;
+    // Clear previous DataTable if it exists
+    if ($.fn.DataTable.isDataTable('#reportTable')) {
+        $('#reportTable').DataTable().clear().destroy();  // Clear and destroy the existing DataTable
+    }
+    document.getElementById('reportTable').innerHTML = ''; // Clear the inner HTML
+    fullDataSet = []; // Reset the fullDataSet
     var jsonData = Tools.FormInputs('generateOfficerReportForm');
     Tools.SqlTableAdapter('generatereport_officer', jsonData).then(function(response) {
-    Tools.PopulateTable('reportTable', response);
-    fullDataSet = response;
-    $('#reportTable').DataTable();
-    Tools.addClassToColumnByHeader('reportTable', 'fullname', 'fullname');
-    }).catch(function(error) { console.error('Error:', error); });
+        Tools.PopulateTable('reportTable', response); // Populate the table with new data
+        fullDataSet = response; // Update the fullDataSet with the new data
+        $('#reportTable').DataTable(); // Initialize the DataTable
+        Tools.addClassToColumnByHeader('reportTable', 'fullname', 'fullname'); // Add class to specific column
+    }).catch(function(error) {
+        console.error('Error:', error);
+    });
     document.getElementById('generateReportIndicator').hidden = true;
 });
-$('#exportBtn').click(function(){  
+$('#exportBtn').click(function(){
     var activitySelect = document.getElementById('activityName');
-    var owner = document.getElementById('ownerAbbrv').value;
+    var owner = document.getElementById('ownerAbbrv');
     var selectedText = activitySelect.options[activitySelect.selectedIndex].textContent;
-
-    var tempTableId = 'tempExportTable';
-    var tempTable = $('<table id="' + tempTableId + '" style="display:none;"></table>');
-    $('body').append(tempTable);
-    var columns = Object.keys(fullDataSet[0] || {});
-    var headerRow = $('<tr></tr>');
-    columns.forEach(function(column) {
-     headerRow.append('<th>' + column + '</th>');
-    });
-    tempTable.append(headerRow);
-    fullDataSet.forEach(function(row) {
-    var dataRow = $('<tr></tr>');
-    columns.forEach(function(column) {
-       dataRow.append('<td>' + row[column] + '</td>');
-       });
-       tmpTable.append(dataRow);
-    });
-    Tools.ExportTableToExcel('reportTable', selectedText, selectedText, owner);
-    tempTable.remove();
+    if (owner.tagName.toLowerCase() === 'select') { 
+        var selectedOwner = owner.options[owner.selectedIndex].textContent;
+        owner = selectedOwner;
+    } else { owner = owner.value; }
+    Tools.createHiddenTableFromData(fullDataSet);
+    Tools.ExportTableToExcel('tempExportTable', selectedText, selectedText, owner);
 });
 $('#reportModal').on('hide.bs.modal', function (e) { $('#reportTable').html(''); $('#generateOfficerReportForm')[0].reset();});
+
+
 // Student function
 $('#generateBtnStudent').click(function(){
     document.getElementById('generateReportIndicator').hidden = false;
+    // Clear previous DataTable if it exists
+    if ($.fn.DataTable.isDataTable('#reportTableStudent')) {
+        $('#reportTableStudent').DataTable().clear().destroy();  // Clear and destroy the existing DataTable
+    }
+    document.getElementById('reportTableStudent').innerHTML = ''; // Clear the inner HTML
+    fullDataSet = []; // Reset the fullDataSet
     var jsonData = Tools.FormInputs('generateStudentReportForm');
     Tools.SqlTableAdapter('generatereport_student', jsonData).then(function(response) {
-    Tools.PopulateTable('reportTableStudent', response);
-    fullDataSet = response;
-    $('#reportTableStudent').DataTable();
-    Tools.addClassToColumnByHeader('reportTableStudent', 'fullname', 'fullname');
-    }).catch(function(error) { console.error('Error:', error); });
+        Tools.PopulateTable('reportTableStudent', response); // Populate the table with new data
+        fullDataSet = response; // Update the fullDataSet with the new data
+        $('#reportTableStudent').DataTable(); // Initialize the DataTable
+        Tools.addClassToColumnByHeader('reportTableStudent', 'fullname', 'fullname'); // Add class to specific column
+    }).catch(function(error) {
+        console.error('Error:', error);
+    });
     document.getElementById('generateReportIndicator').hidden = true;
 });
 $('#exportBtnStudent').click(function(){
@@ -212,4 +218,5 @@ $('#exportBtnStudent').click(function(){
 });
 $('#reportModalStudent').on('hide.bs.modal', function (e) { $('#reportTableStudent').html(''); $('#generateStudentReportForm')[0].reset();});
 </script>
+
 <?php include 'footer.php'; ?>

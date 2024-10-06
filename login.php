@@ -33,16 +33,36 @@
                     $token = $jwtHandler->generateToken($payload);
                     $_SESSION["student_information"] = json_encode($decodedData);
                     $_SESSION["token"] = $token;
-                    if(strtoupper($logintype) == "OFFICER") { header("Location:usr/dashboard.php?sid={$encryptedId}"); } 
-                    elseif(strtoupper($logintype) == "NON-OFFICER") { header("Location:student/dashboard.php?sid={$encryptedId}"); }
+                    // if(strtoupper($logintype) == "OFFICER") { header("Location:usr/dashboard.php?sid={$encryptedId}"); } 
+                    // elseif(strtoupper($logintype) == "NON-OFFICER") { header("Location:student/dashboard.php?sid={$encryptedId}"); }
+                    $returnData = array(
+                        "code" => 1,
+                        "id" => $encryptedId,
+                        "loginType" => $logintype
+                    );
+                    echo json_encode($returnData);
                     exit();
                 } elseif($code == 0) {
-                    header("Location:./?message={$decodedData}");
+                    // header("Location:./?message={$decodedData}");
+                    $returnData = array(
+                        "code" => 0,
+                        "message" => $decodedData
+                    );
+                    echo json_encode($returnData);
                     exit();
                 }
             } else {
-                echo json_encode(array("code" => "0", "data" => "Error executing query"));
+                // echo json_encode(array("code" => "0", "data" => "Error executing query"));
+                // echo "Error executing query";
+                $returnData = array(
+                    "code" => 0,
+                    "message" => "Error executing query"
+                );
+                echo json_encode($returnData);
+                exit();
             }
-        } catch (PDOException $e) { echo json_encode(array("code" => "0", "data" => "Database error: " . $e->getMessage())); }
+        } catch (PDOException $e) { 
+            echo $e->getMessage();
+        }
     }
 ?>

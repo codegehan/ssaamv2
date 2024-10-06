@@ -2,10 +2,10 @@
 $studentInfo = json_decode($_SESSION["student_information"], true);
 $d = $studentInfo[0];
 
-if ($decryptedId !== $d["student_id"]){
-  header('Location:../?message=Unrecognized action');
-  exit();
-}
+// if ($decryptedId !== $d["student_id"]){
+//   header('Location:../?message=Unrecognized action');
+//   exit();
+// }
 $access_dasboard='hidden';
 $access_report='hidden';
 $access_receipt='hidden';
@@ -13,7 +13,7 @@ $access_account='hidden';
 $access_activites='hidden';
 $access_scan='hidden';
 
-$access = $d["position"];
+$access = $d["level"];
 
 if(strtoupper($access) == "ADMINISTRATOR") 
 {
@@ -34,6 +34,7 @@ elseif(strtoupper($access) == "PRESIDENT" || strtoupper($access) == "VICE PRESID
 else
 {
   $access_scan='';
+  $access_dasboard='';
 }
 
 ?>
