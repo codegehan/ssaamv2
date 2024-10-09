@@ -24,7 +24,7 @@ if(strtoupper($access) == "ADMINISTRATOR")
   $access_activites='';
   $access_scan='';
 } 
-elseif(strtoupper($access) == "PRESIDENT" || strtoupper($access) == "VICE PRESIDENT" || strtoupper($access) == "GOVERNOR" || strtoupper($access) == "VICE GOVERNOR")
+elseif(strtoupper($access) == "SG OFFICERS")
 {
   $access_dasboard='';
   $access_report='';
