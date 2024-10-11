@@ -51,7 +51,7 @@
                 <input type="text" class="form-control text-uppercase" id="description" name="description">
             </div>
             <?php 
-                if(strtoupper($d["position"]) == "ADMINISTRATOR") { ?>
+                if(strtoupper($d["level"]) == "ADMINISTRATOR") { ?>
                 <div class="form-group text-start mb-1">
                     <label class="label-input">OWNER</label>
                     <select id="owner" name="owner" class="form-control mb-2" onchange="checkValue()" required>
