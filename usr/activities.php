@@ -63,7 +63,7 @@
                 <div class="form-group text-start mb-1">
                     <label class="label-input">OWNER</label>
                     <input type="text" class="form-control text-uppercase" id="ownerDisplay" value="<?=$d["course"]?>" disabled>
-                    <input type="text" class="form-control" name="owner" id="owner" value="<?=$d["course"]?>" hidden>
+                    <input type="text" class="form-control" name="owner" id="owner" value="<?=$d["abbrv"]?>" hidden>
                 </div>
             <?php }?>
             <div class="form-group text-start mb-1">
