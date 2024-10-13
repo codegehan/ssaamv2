@@ -38,7 +38,7 @@
                         <label for="formGroupExampleInput">Activity</label>
                         <select name="activity" id="activityName" class="form-control customFont">
                             <option value=""></option>
-                            <?php OptionMaker::DefaultPopulate("selectactivity",$d["course_code"],"activitycode","description");?>
+                            <?php OptionMaker::DefaultPopulate("selectactivity",$d["abbrv"],"activitycode","description");?>
                         </select>
                     </div>
                     <div class="col">
